@@ -1,5 +1,7 @@
 # Time-series foundation model bake-off
 
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white) ![13 models](https://img.shields.io/badge/models-13-eb6834) ![38 cells](https://img.shields.io/badge/dataset%C3%97horizon%20cells-38-2a78d6) ![No API keys](https://img.shields.io/badge/API%20keys-none-1baf7a)
+
 Thirteen models, three isolated Python environments plus a dependency-free scorer, one
 set of rules. No API keys, no GPU required.
 
@@ -9,7 +11,7 @@ moves more than any leaderboard suggests.
 
 Companion code for the writing at [satsawat.ai](https://satsawat.ai).
 
-## Why this repository exists
+## 🧭 Why this repository exists
 
 A time-series foundation model (TSFM) is a pretrained model you call the way you call an
 LLM: hand it the recent history of any series, get a forecast back, no fitting step. That
@@ -45,7 +47,7 @@ is.
 
 ---
 
-## Headline results
+## 🏁 Headline results
 
 > **Terminology.** One **cell** = one dataset paired with one horizon: all 13 models
 > forecasting the same series, from the same origins, over the same distance, lowest
@@ -124,7 +126,7 @@ day 7; this study does not localize it further.
 
 ---
 
-## Experimental protocol
+## 🔬 Experimental protocol
 
 ### Rolling origins
 
@@ -194,7 +196,7 @@ on mismatched origins. Context equality is enforced by the task slice described 
 
 ---
 
-## The datasets
+## 📦 The datasets
 
 Nine of the ten are windowed to 2026, which postdates every cutoff on the TimesFM 2.5
 model card. That is what makes "zero-shot" literally true rather than hopeful, and it
@@ -251,7 +253,7 @@ The deeper cross-environment analysis concentrates on two datasets; the rational
 
 ---
 
-## Metric definitions, enforced in code
+## 📏 Metric definitions, enforced in code
 
 ### MASE (primary)
 
@@ -312,7 +314,7 @@ that looks fine and is meaningless. The run aborts rather than reporting it.
 
 ---
 
-## Why three environments
+## 🧩 Why three environments
 
 Python resolves one version of each package per environment, and these models disagree:
 
@@ -348,7 +350,7 @@ recent-enough python3 is available).
 
 ---
 
-## The forecast contract
+## 🤝 The forecast contract
 
 Each family runs in its own virtualenv and writes forecasts to disk;
 [`score.py`](score.py) reads those and computes every metric while importing **no model
@@ -383,7 +385,7 @@ by a number that looked slightly too good.
 
 ---
 
-## Quick start
+## 🚀 Quick start
 
 ```bash
 bash envs/setup.sh                                   # three virtualenvs; budget ~10 GB
@@ -421,7 +423,7 @@ committed results were produced from the cache as fetched for this study.
 
 ---
 
-## Layout
+## 🗂️ Layout
 
 ```
 datasets.py            ten series and their fetchers; caches to data/
@@ -438,7 +440,7 @@ results/               scored outputs; the numbers this README cites
 
 ---
 
-## Environment notes that cost real time
+## 🛠️ Environment notes that cost real time
 
 None of these are in any model card:
 
@@ -459,7 +461,7 @@ will actually stall you.
 
 ---
 
-## Adding a model
+## ➕ Adding a model
 
 1. Write an adapter in `models.py` exposing `batch(series, horizon) -> Forecast`, where
    `Forecast.quantiles` is `(h, 9)` aligned to `QLEVELS` or `None`.
@@ -474,7 +476,7 @@ guard.
 
 ---
 
-## Threats to validity
+## ⚖️ Threats to validity
 
 Stated plainly, because the numbers above are only worth what these are worth:
 
@@ -518,7 +520,7 @@ win count is not directly comparable to Chronos-2's without that caveat.
 
 ---
 
-## Artifact provenance and superseded runs
+## 🗃️ Artifact provenance and superseded runs
 
 `results/` keeps the intermediate runs. Cite **`bakeoff_full2*`**: the only run with
 MSTL included and both harness bugs fixed. `bakeoff_full*` (no `2`) predates the
@@ -534,7 +536,7 @@ Toto-2.0 weights, is the natural next run.
 
 ---
 
-## License
+## 📄 License
 
 Code: MIT ([`LICENSE`](LICENSE)). Data and model weights carry their own terms; see
 [`NOTICE.md`](NOTICE.md). Note **Moirai-2's weights are CC-BY-NC-4.0 (non-commercial)**;
