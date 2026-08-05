@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Score every model that has written forecasts, under identical rules.
 
-This file imports NO model and NO framework — standard library only. That is the whole
+This file imports NO model and NO framework: standard library only. That is the whole
 design: metric definitions live in exactly one place, so a model cannot be advantaged by
 being scored inside its own process under its own conventions. It also means scoring needs
 no virtualenv and runs anywhere, including on a machine where none of the models install.
@@ -13,7 +13,8 @@ Metric rules, enforced here rather than per-family:
          than the naive it is scaled against".
   MAPE   computed ONLY where the series is a ratio scale with a meaningful zero. It is
          arithmetically meaningless on temperature in degC and on anything crossing zero.
-  WQL    mean pinball loss over the nine deciles; only for models that emit a distribution.
+  WQL    weighted quantile loss over the nine deciles (2x pinball, normalized by
+         sum(|actual|)), for every model that emits a distribution.
   cov80  share of actuals inside the 10-90 band. Should be 80. A calibration check, not
          an accuracy score.
 
@@ -47,7 +48,7 @@ def _load_truth(dataset):
     p = TRUTH / f"{dataset}.json"
     if not p.exists():
         raise FileNotFoundError(
-            f"no truth file for {dataset} ({p}). Run runners/run_core.py first — it writes "
+            f"no truth file for {dataset} ({p}). Run runners/run_core.py first; it writes "
             "the actuals and the per-origin MASE scale that every model is scored against."
         )
     return json.loads(p.read_text())
@@ -57,13 +58,21 @@ def _mase(err_abs, scale):
     return (sum(err_abs) / len(err_abs)) / scale if scale > 0 else float("nan")
 
 
-def _pinball(actual, q, levels):
+def _wql(actual, q, levels):
+    """Weighted quantile loss, matching benchmark.py's definition exactly:
+    2x the pinball loss, averaged over levels, normalized by sum(|actual|).
+
+    The committed results/cross_env_scores.json predates this normalization; its
+    wql column is a plain per-point pinball mean, comparable within one dataset
+    but not across datasets. Rows written by this version are cross-comparable.
+    """
     tot = 0.0
     for a, qs in zip(actual, q):
         for lv, qv in zip(levels, qs):
             d = a - qv
-            tot += (lv * d) if d >= 0 else ((lv - 1) * d)
-    return tot / (len(actual) * len(levels))
+            tot += 2.0 * ((lv * d) if d >= 0 else ((lv - 1) * d))
+    denom = sum(abs(a) for a in actual)
+    return tot / (len(levels) * denom) if denom > 0 else float("nan")
 
 
 def score_dataset(dataset, models=None):
@@ -90,7 +99,7 @@ def score_dataset(dataset, models=None):
             if ratio_scale and all(abs(x) > 1e-9 for x in a):
                 mapes.append(100 * sum(abs((x - y) / x) for x, y in zip(a, p)) / len(a))
             if slot["q"]:
-                wqls.append(_pinball(a, slot["q"], levels))
+                wqls.append(_wql(a, slot["q"], levels))
                 inside = sum(1 for x, qs in zip(a, slot["q"]) if qs[0] <= x <= qs[8])
                 covs.append(100 * inside / len(a))
         rows.append({

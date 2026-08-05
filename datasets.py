@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Six diverse, no-API-key, post-cutoff series. Fetch once, cache to CSV.
+"""Ten diverse, no-API-key series. Fetch once, cache to CSV.
 
-WHY SIX AND WHY THESE
----------------------
+WHY THESE
+---------
 A single dataset tells you almost nothing about a forecasting model. These are chosen to
 span the axis that actually decides whether a foundation model helps: how much structure
-the series has.
+the series has. The six below anchor that axis; the specs table adds the no-structure
+control group (BTC returns, earthquake magnitudes, white noise) and the BOOM telemetry
+panel, ten series in all.
 
     uk_demand_30min   energy      30min   double seasonality (daily + weekly), very high
                                           structure. The best case for a TSFM.
@@ -82,6 +84,9 @@ SPECS: dict[str, Spec] = {
                            "BTC hourly log returns: the textbook stationary, "
                            "zero-mean, non-seasonal real series",
                            {"derive_from": "btc_usd_1h"}),
+    # positive=True keeps MAPE admissible: magnitudes here are all >= 4.5, far from
+    # zero, so the denominators are safe. Moment magnitude is a log scale, so read the
+    # MAPE column as a convenience number; MASE is the metric that carries weight.
     "quake_magnitude_seq": Spec("quake_magnitude_seq", "geophysics", "h", 24, None,
                                 "Mw", True,
                                 "Successive global earthquake magnitudes, indexed in "
@@ -108,7 +113,7 @@ SPECS: dict[str, Spec] = {
     # converse caveat: Toto trains on Datadog telemetry, so BOOM is home turf for Toto
     # and away turf for everyone else.
     "boom_telemetry_5t": Spec("boom_telemetry_5t", "observability", "5min", 288, 2016,
-                              "normalised", False,
+                              "normalized", False,
                               "BOOM production telemetry, 5-minute, sampled variates "
                               "from multivariate groups",
                               {"repo": "Datadog/BOOM",
@@ -163,6 +168,10 @@ def fetch_neso(years: tuple[str, ...] = ("2025", "2026")) -> pd.DataFrame:
             df[c] = pd.to_numeric(df[c], errors="coerce")
     df = df.dropna(subset=["SETTLEMENT_DATE", "SETTLEMENT_PERIOD", "ND"])
     df = df[(df.SETTLEMENT_PERIOD.between(1, 50)) & (df.ND > 0)]
+    # Clamp to the study window so a refetch reproduces the same series instead of
+    # growing with every NESO publication cycle. (2025 stays: the 30-minute series
+    # deliberately carries a year of extra context.)
+    df = df[df.SETTLEMENT_DATE <= pd.Timestamp(WINDOW[1])]
     df = df.sort_values(["SETTLEMENT_DATE", "SETTLEMENT_PERIOD"])
     df = df.drop_duplicates(["SETTLEMENT_DATE", "SETTLEMENT_PERIOD"])
     ts = (df.SETTLEMENT_DATE
@@ -196,7 +205,7 @@ def fetch_quakes(spec: Spec) -> pd.DataFrame:
     limits of current geophysics, independent of the magnitude of the last one. There is
     no diurnal cycle in tectonics and no trend over a few months. The series is indexed
     by EVENT ORDER, not clock time, which is deliberate -- it removes any residual
-    time-of-day artefact from the catalogue itself.
+    time-of-day artifact from the catalog itself.
     """
     rows: list[dict] = []
     start = pd.Timestamp(WINDOW[0])
@@ -236,6 +245,9 @@ def fetch_boom(spec: Spec) -> pd.DataFrame:
     Keeping the group column matters: it is what lets a multivariate model forecast all
     variates of one entity jointly, which is the whole question BOOM exists to ask.
     """
+    # No dataset revision is pinned here, so a refetch tracks the BOOM repo's head;
+    # the committed results were produced from the bundled cache. Live-API series
+    # (NESO, Open-Meteo, USGS, Binance) are likewise fetch-date dependent.
     import pyarrow as pa
     from huggingface_hub import hf_hub_download
 

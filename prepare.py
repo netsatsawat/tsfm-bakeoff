@@ -79,7 +79,7 @@ def structure_features(v: np.ndarray, spec: ds.Spec) -> dict[str, Any]:
                          0 = no trend at all, ->1 = trend dominates.
       seasonal_strength  1 - Var(remainder) / Var(seasonal + remainder). Same scale.
                          Below ~0.3 there is effectively nothing periodic to exploit.
-      spectral_entropy   Shannon entropy of the normalised periodogram, in [0, 1].
+      spectral_entropy   Shannon entropy of the normalized periodogram, in [0, 1].
                          ->1 means the power is spread evenly across all frequencies,
                          i.e. white noise, i.e. inherently unforecastable.
       acf1               Lag-1 autocorrelation. ~0 means no short memory either.
@@ -104,7 +104,7 @@ def structure_features(v: np.ndarray, spec: ds.Spec) -> dict[str, Any]:
     except Exception as e:  # noqa: BLE001
         out["stl_error"] = f"{type(e).__name__}"
 
-    # spectral entropy of the periodogram, normalised to [0, 1]
+    # spectral entropy of the periodogram, normalized to [0, 1]
     x = v - v.mean()
     if x.std() > 0:
         power = np.abs(np.fft.rfft(x)) ** 2
@@ -132,7 +132,7 @@ def structure_features(v: np.ndarray, spec: ds.Spec) -> dict[str, Any]:
 
     # Surge / anomaly character. Deliberately IQR-based and expressed as a COUNT plus a
     # floored ratio: an unfloored MAD denominator returns values up to 1.4e10 on
-    # near-constant telemetry variates, which is a division artefact, not a surge.
+    # near-constant telemetry variates, which is a division artifact, not a surge.
     dev = np.abs(v - np.median(v))
     q1, q3 = np.percentile(v, [25, 75])
     iqr = float(q3 - q1)

@@ -97,8 +97,16 @@ def run_dataset(key: str, registry, origins: int, context: int,
         if not os_:
             print(f"  SKIP {key}/{sid}: too short ({len(y)} obs)")
             continue
+        if len(os_) < origins:
+            print(f"  WARN {key}/{sid}: only {len(os_)} usable origins "
+                  f"(requested {origins}); results are thinner here")
 
-        tasks = [M.Task(y=y[:o], ctx_index=idx[:o], fut_index=idx[o:o + horizon],
+        # Every task carries EXACTLY the use_ctx window, so no adapter can quietly see
+        # more or less history than another. The committed bake-off artifacts predate
+        # this slice: in those runs each neural family applied its own context cap.
+        tasks = [M.Task(y=y[max(0, o - use_ctx):o],
+                        ctx_index=idx[max(0, o - use_ctx):o],
+                        fut_index=idx[o:o + horizon],
                         horizon=horizon) for o in os_]
         targets = [y[o:o + horizon] for o in os_]
         denoms = [mase_denominator(y[max(0, o - use_ctx):o], spec.season) for o in os_]

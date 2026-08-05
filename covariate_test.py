@@ -118,6 +118,10 @@ def run_variant(model, name, y, covs, origins, batch=16):
                                   inputs=[np.asarray(v) for v in inputs])
             preds.extend(np.asarray(p)[i][-HORIZON:] for i in range(len(chunk)))
             continue
+        # NOTE: the horizon slice [o:o+HORIZON] feeds the model the ACTUAL realized
+        # covariate values over the forecast window. For solar and wind that is
+        # perfect weather foresight, so the measured gains are a CEILING on what a
+        # real deployment (which must forecast its covariates) can collect.
         dyn_num = {k: [covs[k][o - CONTEXT:o + HORIZON].tolist() for o in chunk]
                    for k in num_keys}
         dyn_cat = {k: [covs[k][o - CONTEXT:o + HORIZON].astype(int).tolist()
@@ -188,7 +192,7 @@ def main() -> int:
     overall["n"] = df.groupby("variant").size()
     print(overall.to_string())
 
-    print("\n=== by day type — MASE (n in brackets) ===")
+    print("\n=== by day type: MASE (n in brackets) ===")
     piv = df.pivot_table(index="variant", columns="daytype", values="mase",
                          aggfunc="mean").round(3)
     counts = df[df.variant == "plain"].groupby("daytype").size().to_dict()

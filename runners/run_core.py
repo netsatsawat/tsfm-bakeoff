@@ -3,14 +3,14 @@
 
     .venv-core/bin/python runners/run_core.py
 
-Writes forecasts/<dataset>/<model>.csv for every core model, and — uniquely among the
-runners — forecasts/_truth/<dataset>.json.
+Writes forecasts/<dataset>/<model>.csv for every core model, and, uniquely among the
+runners, forecasts/_truth/<dataset>.json.
 
 WHY THE TRUTH FILE IS WRITTEN HERE AND ONLY HERE
 MASE needs a per-origin denominator: the in-sample MAE of the seasonal naive on that
 origin's own context. It depends on the series and its seasonal period, which score.py
 deliberately never loads. Computing it once and storing it per origin guarantees that every
-model — in every environment, possibly run days apart on different machines — is divided by
+model, in every environment, possibly run days apart on different machines, is divided by
 exactly the same number. If each runner derived its own, the families would quietly not be
 comparable and nothing would flag it.
 
@@ -48,7 +48,7 @@ DEFAULT_DATASETS = ["bangkok_pm25_1h", "boom_telemetry_5t"]
 def plan(key: str, origins: int, context: int, series_id=None, horizon=None):
     """The exact (series, origins, context) the other runners must reproduce.
 
-    Returned so run_toto.py / run_moirai.py can call it too — they need identical origins
+    Returned so run_toto.py / run_moirai.py can call it too, they need identical origins
     or score.py refuses to compare them.
     """
     spec = ds.SPECS[key]
@@ -92,7 +92,7 @@ def main():
     a = ap.parse_args()
 
     # Panel datasets carry many series under one key. Each is forecast independently and
-    # stored under "<key>@<series_id>" so score.py needs no concept of panels — it just
+    # stored under "<key>@<series_id>" so score.py needs no concept of panels, it just
     # sees more datasets, each with a matching truth file.
     jobs = []
     for key in a.datasets:
@@ -109,7 +109,7 @@ def main():
         horizon_override = None
         if a.horizon_days is not None:
             horizon_override = int(round(a.horizon_days * 1440 / STEP_MIN[key]))
-        # BOOM series ids look like "ds-139-5T/v003" — the slash would be read as a
+        # BOOM series ids look like "ds-139-5T/v003", the slash would be read as a
         # directory separator and the truth file write fails. Sanitise for filesystem use;
         # the unsanitised id stays in the metadata.
         label = key if sid is None else f"{key}@{str(sid).replace('/', '_')}"
@@ -123,14 +123,14 @@ def main():
         truth = {
             "actuals": {str(o): y[o:o + horizon].tolist() for o in os_},
             # The exact context window each origin used. Satellite runners read this
-            # instead of reloading the series themselves — reconstructing a panel member
+            # instead of reloading the series themselves, reconstructing a panel member
             # from the cache is how run_moirai.py silently forecast all 24 BOOM series
             # concatenated together and still looked plausible.
             "contexts": {str(o): y[max(0, o - use_ctx):o].tolist() for o in os_},
             "scale": {str(o): mase_denominator(y[max(0, o - use_ctx):o], spec.season)
                       for o in os_},
             # MAPE validity is a property of the series, decided once by prepare.py's
-            # audit — not something each runner should re-judge.
+            # audit, not something each runner should re-judge.
             "ratio_scale": bool(prep.mape_valid),
             "horizon": horizon, "season": spec.season, "context": use_ctx, "origins": os_,
         }

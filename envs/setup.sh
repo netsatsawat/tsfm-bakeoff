@@ -11,6 +11,16 @@ PY_VER="${PY_VER:-3.12}"
 HAVE_UV=0
 command -v uv >/dev/null 2>&1 && HAVE_UV=1
 
+if [ "$HAVE_UV" = 0 ]; then
+  # Without uv we fall back to the system python3, which must be at least 3.10 for
+  # the numpy 2.x that the core family pins. Fail here, not mid-install.
+  python3 - <<'PYCHECK'
+import sys
+if sys.version_info < (3, 10):
+    raise SystemExit(f"python3 is {sys.version.split()[0]}; need >= 3.10 (or install uv)")
+PYCHECK
+fi
+
 mkvenv() { if [ "$HAVE_UV" = 1 ]; then uv venv --python "$PY_VER" "$1" >/dev/null
            else python3 -m venv "$1"; fi }
 pipin()  { if [ "$HAVE_UV" = 1 ]; then uv pip install --python "$1" "${@:2}"
@@ -29,7 +39,7 @@ for fam in core toto moirai; do
 done
 
 echo
-echo "Verify the environments really do differ — this is the whole point:"
+echo "Verify the environments really do differ; this is the whole point:"
 for fam in core toto moirai; do
   printf '%-8s ' "$fam"
   ".venv-$fam/bin/python" -c 'import torch,numpy;print("torch",torch.__version__," numpy",numpy.__version__)' 2>/dev/null || echo "(not built)"

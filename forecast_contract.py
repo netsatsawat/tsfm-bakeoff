@@ -9,7 +9,7 @@ One environment cannot satisfy all of them.
 
 So each model family runs in its own virtualenv and writes forecasts to disk. `score.py`
 reads those files and computes every metric. The scorer imports no model and no framework,
-which means it is also the only place metric definitions live — no family can be scored
+which means it is also the only place metric definitions live; no family can be scored
 under subtly different rules from another.
 
 DELIBERATELY DEPENDENCY-FREE

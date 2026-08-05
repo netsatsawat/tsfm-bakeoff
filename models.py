@@ -12,7 +12,7 @@ naive harness silently cheats:
                 Scales internally (normalize_inputs). Univariate only; covariates via
                 XReg, which is not used here.
   Chronos-2     input MUST be 3-D (n_series, n_variates, history). Returns a list of
-                (n_variates, 21, horizon) -- its own 21-level quantile grid, from which
+                (n_variates, 21, horizon), its own 21-level quantile grid, from which
                 the deciles are indices 2,4,...,18. Handles NaN natively. Genuinely
                 multivariate: pass n_variates > 1 and it shares information across them.
   Chronos-Bolt  older, simpler: predict_quantiles(list_of_1d, h, levels) -> (q, mean).
@@ -176,9 +176,13 @@ class GbdtCalendar(BaseModel):
         self.max_context = max_context
 
     @staticmethod
-    def _features(idx: pd.DatetimeIndex, season: int, lag1: np.ndarray,
-                  lag2: np.ndarray) -> np.ndarray:
-        pos = np.arange(len(idx)) % season
+    def _features(idx: pd.DatetimeIndex, season: int, pos: np.ndarray,
+                  lag1: np.ndarray, lag2: np.ndarray) -> np.ndarray:
+        # `pos` is the ABSOLUTE position in the series modulo the season. An earlier
+        # version derived it from np.arange(len(idx)), which is phase-shifted between
+        # training rows and the forecast horizon whenever the origin is not a multiple
+        # of the season; the committed bake-off artifacts predate this fix, so the GBDT
+        # rows there are handicapped and read as lower bounds.
         ang = 2 * np.pi * pos / season
         dow = idx.dayofweek.to_numpy()
         return np.column_stack([
@@ -198,14 +202,15 @@ class GbdtCalendar(BaseModel):
                 continue
             # training rows start at 2 seasons in, so both lags exist
             tr = np.arange(2 * m, len(y))
-            Xtr = self._features(idx[tr], m, y[tr - m], y[tr - 2 * m])
+            Xtr = self._features(idx[tr], m, tr % m, y[tr - m], y[tr - 2 * m])
             ytr = y[tr]
             fut_lag1 = y[len(y) - m: len(y) - m + t.horizon]
             fut_lag2 = y[len(y) - 2 * m: len(y) - 2 * m + t.horizon]
             if len(fut_lag1) < t.horizon or len(fut_lag2) < t.horizon:
                 out.append(Forecast(np.repeat(y[-1], t.horizon)))
                 continue
-            Xte = self._features(t.fut_index, m, fut_lag1, fut_lag2)
+            fut_pos = (len(y) + np.arange(t.horizon)) % m
+            Xte = self._features(t.fut_index, m, fut_pos, fut_lag1, fut_lag2)
             mdl = HistGradientBoostingRegressor(
                 max_iter=200, learning_rate=0.08, max_depth=6,
                 early_stopping=False, random_state=0)
@@ -292,7 +297,7 @@ class Chronos2(BaseModel):
         for p in preds:
             a = np.asarray(p)              # (n_variates=1, 21, horizon)
             q = a[0][self.DECILE_IDX, :].T                            # (h, 9)
-            out.append(Forecast(q[:, 4].copy(), q))                    # median as point
+            out.append(Forecast(q[:, 4].copy(), q))    # median as point (see README threats)
         return out
 
     def batch_multivariate(self, group: np.ndarray, horizon: int) -> np.ndarray:
@@ -352,9 +357,11 @@ def default_registry(fm_context: int = 2048) -> list[BaseModel]:
 # so the harness can report them as skipped-with-reason instead of pretending the field
 # is complete. Measured with `pip install --dry-run` on 2026-07-29.
 UNAVAILABLE = {
-    "toto_2p0": ("Datadog Toto-2.0 (current GIFT-Eval leader). `toto-ts==0.2.0` "
-                 "downgrades torch 2.11->2.7, numpy 2.2.6->1.26.4, pandas 2.3.3->2.2.3 "
-                 "and hard-pins jupyter==1.1.1. Needs its own venv."),
+    "toto_2p0": ("Datadog Toto, checkpoint Toto-Open-Base-1.0 (the newer Toto-2.0 "
+                 "family tops GIFT-Eval; the key toto_2p0 is a slip from the toto-ts "
+                 "0.2.0 package version). `toto-ts==0.2.0` downgrades torch 2.11->2.7, "
+                 "numpy 2.2.6->1.26.4, pandas 2.3.3->2.2.3 and hard-pins "
+                 "jupyter==1.1.1. Needs its own venv."),
     "moirai_2": ("Salesforce Moirai-2. `uni2ts==2.0.0` downgrades torch->2.4.1, "
                  "numpy->1.26.4, pandas->2.1.4 and pulls jax+lightning. Needs its own "
                  "venv."),

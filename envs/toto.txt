@@ -1,4 +1,4 @@
-# Toto-2.0 (Datadog) — isolated because toto-ts pins an older numeric stack:
+# Toto (Datadog, Toto-Open-Base-1.0); isolated because toto-ts pins an older numeric stack:
 # torch 2.11->2.7, numpy 2.2.6->1.26.4, pandas 2.3.3->2.2.3, and jupyter==1.1.1.
 # Nothing here is wrong; it simply cannot coexist with timesfm 2.0.2 in one env.
 # Confirmed on build: this env resolves torch 2.7.0 / numpy 1.26.4 while core gets

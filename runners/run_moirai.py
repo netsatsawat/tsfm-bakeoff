@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Moirai-2 (Salesforce) runner — runs in its own virtualenv.
+"""Moirai-2 (Salesforce) runner, in its own virtualenv.
 
     .venv-moirai/bin/python runners/run_moirai.py
 
@@ -7,8 +7,8 @@ Isolated because `uni2ts==2.0.0` pins torch 2.4.1 / numpy 1.26.4 and pulls jax, 
 and tensorboard. Like the Toto runner, this imports no core-family model code and takes its
 origins from the truth file run_core.py wrote, so every family forecasts identical tasks.
 
-LICENCE WARNING
-Moirai-2 weights are released CC-BY-NC-4.0 — NON-COMMERCIAL. Results are fine for research
+LICENSE WARNING
+Moirai-2 weights are released CC-BY-NC-4.0, NON-COMMERCIAL. Results are fine for research
 and publication; do not ship a commercial product built on them. TimesFM, Chronos and Toto
 are all Apache-2.0 by contrast.
 
@@ -38,21 +38,6 @@ FORECASTS = CODE / "forecasts"
 DEFAULT_DATASETS = ["bangkok_pm25_1h"]
 CHECKPOINT = "Salesforce/moirai-2.0-R-small"
 DECILES = np.arange(1, 10) / 10.0
-
-
-def load_series(dataset: str) -> np.ndarray:
-    """Read the cached series directly. Panel members are stored as '<key>@<series_id>';
-    the cache file is keyed on the dataset, and prepare.py's panel split is reproduced by
-    the truth file rather than re-derived here."""
-    key = dataset.split("@", 1)[0]
-    path = CODE / "data" / f"{key}.csv"
-    if not path.exists():
-        raise SystemExit(f"missing cache {path}. Run: .venv-core/bin/python datasets.py")
-    df = pd.read_csv(path)
-    if "@" in dataset and "series_id" in df.columns:
-        df = df[df["series_id"] == dataset.split("@", 1)[1]]
-    col = "value" if "value" in df.columns else df.columns[-1]
-    return df[col].to_numpy(dtype="float64")
 
 
 def main():
@@ -94,7 +79,7 @@ def main():
             # gluonts wants a timestamped frame; the index is arbitrary here because Moirai
             # infers periodicity from the context, but it must be regular.
             # float32 is mandatory on Apple Silicon: gluonts' batchify builds tensors from
-            # the frame's dtype, and MPS has no float64 kernel — a float64 column dies with
+            # the frame's dtype, and MPS has no float64 kernel; a float64 column dies with
             # "Cannot convert a MPS Tensor to float64 dtype".
             frame = pd.DataFrame(
                 {"target": ctx.astype("float32")},
@@ -122,7 +107,7 @@ def main():
         write_forecasts(FORECASTS, dataset, "moirai_2", rows, {
             "context": context, "horizon": horizon, "n_origins": len(origins),
             "seconds_per_forecast": round(per, 6), "env": "moirai",
-            "checkpoint": CHECKPOINT, "licence": "CC-BY-NC-4.0 (non-commercial)",
+            "checkpoint": CHECKPOINT, "license": "CC-BY-NC-4.0 (non-commercial)",
             "torch": torch.__version__, "numpy": np.__version__,
         })
         print(f"  moirai_2 ok  {per*1000:.1f} ms/forecast")

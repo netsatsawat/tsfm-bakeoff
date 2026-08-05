@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Toto-2.0 (Datadog) runner — runs in its own virtualenv.
+"""Toto (Datadog) runner, in its own virtualenv.
+
+The checkpoint is Toto-Open-Base-1.0, the openly released model. Datadog's newer
+Toto-2.0 family (which tops GIFT-Eval) was not runnable here; rerunning with it is
+queued future work. The result key "toto_2p0" is a naming slip kept for artifact
+compatibility: it came from the toto-ts 0.2.0 PACKAGE version, not a model generation.
 
     .venv-toto/bin/python runners/run_toto.py
 
@@ -28,7 +33,7 @@ import time
 import os
 
 # Toto samples from a Gamma mixture, and `aten::_standard_gamma` has no MPS kernel as of
-# torch 2.7 — the forecast call dies with NotImplementedError on Apple Silicon. The CPU
+# torch 2.7: the forecast call dies with NotImplementedError on Apple Silicon. The CPU
 # fallback is the documented workaround and only affects that one operator. Must be set
 # BEFORE torch is imported.
 os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
@@ -51,25 +56,11 @@ CHECKPOINT = "Datadog/Toto-Open-Base-1.0"
 DECILES = np.arange(1, 10) / 10.0
 
 
-def load_series(dataset: str) -> np.ndarray:
-    """Read the cached series straight from data/*.csv.
-
-    Deliberately not via datasets.py: that module imports the core stack. The cache is a
-    plain two-column CSV, so reading it with pandas alone keeps this env independent.
-    """
-    path = CODE / "data" / f"{dataset}.csv"
-    if not path.exists():
-        raise SystemExit(f"missing cache {path}. Run: .venv-core/bin/python datasets.py")
-    df = pd.read_csv(path)
-    col = "value" if "value" in df.columns else df.columns[-1]
-    return df[col].to_numpy(dtype="float64")
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--datasets", nargs="*", default=DEFAULT_DATASETS)
     ap.add_argument("--samples", type=int, default=256, help="Toto is sample-based; deciles are empirical")
-    # Toto asserts num_samples %% samples_per_batch == 0, and the default batch is 10 —
+    # Toto asserts num_samples %% samples_per_batch == 0, and the default batch is 10,
     # so the obvious 256 fails outright. Pick a batch that always divides.
     ap.add_argument("--sample-batch", type=int, default=64)
     a = ap.parse_args()
@@ -77,6 +68,11 @@ def main():
     from toto.model.toto import Toto
     from toto.inference.forecaster import TotoForecaster
     from toto.data.util.dataset import MaskedTimeseries
+
+    # Toto's forecasts are Monte Carlo samples; seed so a rerun reproduces them.
+    # The committed cross-environment artifacts predate this seed.
+    torch.manual_seed(0)
+    np.random.seed(0)
 
     device = "mps" if torch.backends.mps.is_available() else "cpu"
     model = Toto.from_pretrained(CHECKPOINT).to(device).eval()
@@ -114,6 +110,8 @@ def main():
                 samples = samples.reshape(1, -1) if horizon == 1 else samples.reshape(-1, 1)
             elif samples.shape[0] != horizon:
                 samples = samples.T
+            # Sample mean as the point forecast. Other adapters emit medians, which
+            # MAE favors; the mix is disclosed in README "Threats to validity".
             point = samples.mean(axis=1)
             qs = np.quantile(samples, DECILES, axis=1).T                    # (horizon, 9)
             for s in range(horizon):
@@ -126,7 +124,7 @@ def main():
         write_forecasts(FORECASTS, key, "toto_2p0", rows, {
             "context": context, "horizon": horizon, "n_origins": len(origins),
             "seconds_per_forecast": round(per, 6), "env": "toto",
-            "checkpoint": CHECKPOINT, "num_samples": a.samples,
+            "checkpoint": CHECKPOINT, "num_samples": a.samples, "seed": 0,
             "torch": torch.__version__, "numpy": np.__version__,
         })
         print(f"  toto_2p0 ok  {per*1000:.1f} ms/forecast")

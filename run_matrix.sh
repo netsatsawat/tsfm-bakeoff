@@ -9,7 +9,7 @@
 #
 # Horizons are given in DAYS and converted per dataset frequency, so "7d" is the same
 # business decision on 30-minute demand as on hourly air quality. Within any single cell
-# every model faces the identical horizon — score.py enforces that.
+# every model faces the identical horizon; score.py enforces that.
 #
 # Usage:  bash run_matrix.sh [origins]
 
@@ -33,7 +33,7 @@ for ds in "${DATASETS[@]}"; do
   for h in "${HORIZONS[@]}"; do
     # BOOM holds 14 days per series; a 14- or 30-day horizon cannot leave room for context.
     if [ "$ds" = "boom_telemetry_5t" ] && [ "$h" -ge 14 ]; then
-      say "SKIP  $ds @ ${h}d — only 14 days of data per series"; continue
+      say "SKIP  $ds @ ${h}d, only 14 days of data per series"; continue
     fi
     say "RUN   $ds @ ${h}d"
     if .venv-core/bin/python runners/run_core.py \
@@ -41,7 +41,7 @@ for ds in "${DATASETS[@]}"; do
          --series-cap 1 >> "$LOG" 2>&1; then
       say "  core ok"
     else
-      say "  core SKIPPED/FAILED (see $LOG) — continuing"
+      say "  core SKIPPED/FAILED (see $LOG), continuing"
       continue      # no truth file, so the satellites have nothing to read
     fi
 
@@ -56,7 +56,7 @@ for ds in "${DATASETS[@]}"; do
   done
 done
 
-say "matrix complete — scoring"
+say "matrix complete, scoring"
 python3 score.py --out results/cross_env_scores.json >> "$LOG" 2>&1 \
   && say "scored -> results/cross_env_scores.json" || say "scoring failed, see $LOG"
 say "done"
