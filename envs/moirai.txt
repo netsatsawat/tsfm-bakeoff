@@ -1,0 +1,3 @@
+# Moirai-2 (Salesforce) — isolated because uni2ts pins torch 2.4.1, numpy 1.26.4,
+# pandas 2.1.4 and pulls jax + lightning + tensorboard.
+uni2ts==2.0.0

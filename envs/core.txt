@@ -1,0 +1,11 @@
+# Core family: TimesFM + Chronos + classical + ML + naive.
+# These four DO coexist; only Toto and Moirai need separate environments.
+# Install torch matching your accelerator FIRST (https://pytorch.org/get-started/locally/).
+timesfm[torch]==2.0.2
+chronos-forecasting==2.3.1
+statsforecast==2.1.1
+scikit-learn==1.7.2
+numpy==2.2.6
+pandas==2.3.3
+pyarrow==24.0.0
+huggingface_hub==1.12.0

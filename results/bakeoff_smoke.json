@@ -1,0 +1,278 @@
+{
+  "generated": "2026-07-29T15:31:07.023271+00:00",
+  "platform": "macOS-26.5.2-arm64-arm-64bit python 3.10.6",
+  "context": 2048,
+  "origins": 6,
+  "horizons": {
+    "uk_demand_30min": 48,
+    "white_noise_synth": 24
+  },
+  "seasonal_strength": {
+    "uk_demand_30min": 0.85,
+    "white_noise_synth": 0.223
+  },
+  "models": [
+    "naive_last",
+    "naive_mean",
+    "seasonal_naive",
+    "seasonal_profile",
+    "autoets",
+    "autotheta",
+    "gbdt_calendar",
+    "timesfm_2p5_ctx2048",
+    "chronos_2_ctx2048",
+    "chronos_bolt_small"
+  ],
+  "unavailable": {
+    "toto_2p0": "Datadog Toto-2.0 (current GIFT-Eval leader). `toto-ts==0.2.0` downgrades torch 2.11->2.7, numpy 2.2.6->1.26.4, pandas 2.3.3->2.2.3 and hard-pins jupyter==1.1.1. Needs its own venv.",
+    "moirai_2": "Salesforce Moirai-2. `uni2ts==2.0.0` downgrades torch->2.4.1, numpy->1.26.4, pandas->2.1.4 and pulls jax+lightning. Needs its own venv."
+  },
+  "mase_by_dataset": {
+    "uk_demand_30min": {
+      "autoets": 2.8887,
+      "autotheta": 0.8854,
+      "chronos_2_ctx2048": 0.6821,
+      "chronos_bolt_small": 0.7915,
+      "gbdt_calendar": 1.5429,
+      "naive_last": 2.7645,
+      "naive_mean": 3.116,
+      "seasonal_naive": 1.2139,
+      "seasonal_profile": 1.2649,
+      "timesfm_2p5_ctx2048": 0.5935
+    },
+    "white_noise_synth": {
+      "autoets": 0.702,
+      "autotheta": 0.734,
+      "chronos_2_ctx2048": 0.7024,
+      "chronos_bolt_small": 0.7039,
+      "gbdt_calendar": 0.7559,
+      "naive_last": 0.9533,
+      "naive_mean": 0.701,
+      "seasonal_naive": 0.9697,
+      "seasonal_profile": 0.7392,
+      "timesfm_2p5_ctx2048": 0.7016
+    }
+  },
+  "by_dataset_model": [
+    {
+      "dataset": "uk_demand_30min",
+      "model": "autoets",
+      "mase": 2.8887,
+      "mase_med": 2.992,
+      "mape": 20.3305,
+      "wql": 0.167,
+      "cov80": 59.0278,
+      "sec": 0.7443,
+      "n": 6
+    },
+    {
+      "dataset": "uk_demand_30min",
+      "model": "autotheta",
+      "mase": 0.8854,
+      "mase_med": 0.8862,
+      "mape": 6.5543,
+      "wql": 0.0547,
+      "cov80": 69.4444,
+      "sec": 0.2342,
+      "n": 6
+    },
+    {
+      "dataset": "uk_demand_30min",
+      "model": "chronos_2_ctx2048",
+      "mase": 0.6821,
+      "mase_med": 0.49,
+      "mape": 5.2254,
+      "wql": 0.0422,
+      "cov80": 72.9167,
+      "sec": 0.8053,
+      "n": 6
+    },
+    {
+      "dataset": "uk_demand_30min",
+      "model": "chronos_bolt_small",
+      "mase": 0.7915,
+      "mase_med": 0.6304,
+      "mape": 6.366,
+      "wql": 0.053,
+      "cov80": 52.4306,
+      "sec": 0.311,
+      "n": 6
+    },
+    {
+      "dataset": "uk_demand_30min",
+      "model": "gbdt_calendar",
+      "mase": 1.5429,
+      "mase_med": 1.4725,
+      "mape": 11.984,
+      "wql": null,
+      "cov80": null,
+      "sec": 0.997,
+      "n": 6
+    },
+    {
+      "dataset": "uk_demand_30min",
+      "model": "naive_last",
+      "mase": 2.7645,
+      "mase_med": 2.3188,
+      "mape": 19.4879,
+      "wql": null,
+      "cov80": null,
+      "sec": 0.0,
+      "n": 6
+    },
+    {
+      "dataset": "uk_demand_30min",
+      "model": "naive_mean",
+      "mase": 3.116,
+      "mase_med": 2.8055,
+      "mape": 24.9388,
+      "wql": null,
+      "cov80": null,
+      "sec": 0.0,
+      "n": 6
+    },
+    {
+      "dataset": "uk_demand_30min",
+      "model": "seasonal_naive",
+      "mase": 1.2139,
+      "mase_med": 0.8382,
+      "mape": 9.1782,
+      "wql": null,
+      "cov80": null,
+      "sec": 0.0,
+      "n": 6
+    },
+    {
+      "dataset": "uk_demand_30min",
+      "model": "seasonal_profile",
+      "mase": 1.2649,
+      "mase_med": 0.903,
+      "mape": 10.1475,
+      "wql": null,
+      "cov80": null,
+      "sec": 0.0,
+      "n": 6
+    },
+    {
+      "dataset": "uk_demand_30min",
+      "model": "timesfm_2p5_ctx2048",
+      "mase": 0.5935,
+      "mase_med": 0.4499,
+      "mape": 4.8342,
+      "wql": 0.0412,
+      "cov80": 75.3472,
+      "sec": 0.6487,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "autoets",
+      "mase": 0.702,
+      "mase_med": 0.6855,
+      "mape": null,
+      "wql": 0.773,
+      "cov80": 81.9444,
+      "sec": 0.1744,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "autotheta",
+      "mase": 0.734,
+      "mase_med": 0.7212,
+      "mape": null,
+      "wql": 0.8037,
+      "cov80": 80.5556,
+      "sec": 0.1921,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "chronos_2_ctx2048",
+      "mase": 0.7024,
+      "mase_med": 0.6828,
+      "mape": null,
+      "wql": 0.7727,
+      "cov80": 81.9444,
+      "sec": 0.0272,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "chronos_bolt_small",
+      "mase": 0.7039,
+      "mase_med": 0.6862,
+      "mape": null,
+      "wql": 0.7778,
+      "cov80": 82.6389,
+      "sec": 0.0098,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "gbdt_calendar",
+      "mase": 0.7559,
+      "mase_med": 0.7561,
+      "mape": null,
+      "wql": null,
+      "cov80": null,
+      "sec": 1.1139,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "naive_last",
+      "mase": 0.9533,
+      "mase_med": 0.8271,
+      "mape": null,
+      "wql": null,
+      "cov80": null,
+      "sec": 0.0,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "naive_mean",
+      "mase": 0.701,
+      "mase_med": 0.6865,
+      "mape": null,
+      "wql": null,
+      "cov80": null,
+      "sec": 0.0,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "seasonal_naive",
+      "mase": 0.9697,
+      "mase_med": 0.9322,
+      "mape": null,
+      "wql": null,
+      "cov80": null,
+      "sec": 0.0,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "seasonal_profile",
+      "mase": 0.7392,
+      "mase_med": 0.7583,
+      "mape": null,
+      "wql": null,
+      "cov80": null,
+      "sec": 0.0,
+      "n": 6
+    },
+    {
+      "dataset": "white_noise_synth",
+      "model": "timesfm_2p5_ctx2048",
+      "mase": 0.7016,
+      "mase_med": 0.6862,
+      "mape": null,
+      "wql": 0.7729,
+      "cov80": 81.9444,
+      "sec": 0.1819,
+      "n": 6
+    }
+  ]
+}

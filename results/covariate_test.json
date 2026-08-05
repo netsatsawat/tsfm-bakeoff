@@ -1,0 +1,55 @@
+{
+  "generated": "2026-07-30T05:19:11.612093+00:00",
+  "n_origins": 129,
+  "horizon": 48,
+  "context": 512,
+  "ridge": 1.0,
+  "xreg_mode": "xreg + timesfm",
+  "overall": {
+    "plain": {
+      "mase": 0.7551,
+      "mape": 6.7241,
+      "n": 129
+    },
+    "xreg_both": {
+      "mase": 0.6574,
+      "mape": 5.8492,
+      "n": 129
+    },
+    "xreg_calendar": {
+      "mase": 0.7835,
+      "mape": 7.0593,
+      "n": 129
+    },
+    "xreg_energy": {
+      "mase": 0.573,
+      "mape": 5.039,
+      "n": 129
+    }
+  },
+  "by_daytype_mase": {
+    "holiday (n=4)": {
+      "plain": 1.031,
+      "xreg_both": 0.833,
+      "xreg_calendar": 0.748,
+      "xreg_energy": 0.96
+    },
+    "weekday (n=88)": {
+      "plain": 0.69,
+      "xreg_both": 0.583,
+      "xreg_calendar": 0.711,
+      "xreg_energy": 0.534
+    },
+    "weekend (n=37)": {
+      "plain": 0.881,
+      "xreg_both": 0.816,
+      "xreg_calendar": 0.959,
+      "xreg_energy": 0.624
+    }
+  },
+  "daytype_counts": {
+    "holiday": 4,
+    "weekday": 88,
+    "weekend": 37
+  }
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "group": "ds-139-5T",
+    "n_variates": 8,
+    "mean_abs_corr": 0.164,
+    "mase_joint": 0.368,
+    "mase_single": 0.338,
+    "joint_better_pct": 39.6
+  },
+  {
+    "group": "ds-1558-5T",
+    "n_variates": 8,
+    "mean_abs_corr": 0.198,
+    "mase_joint": 0.472,
+    "mase_single": 0.469,
+    "joint_better_pct": 47.9
+  },
+  {
+    "group": "ds-2-5T",
+    "n_variates": 8,
+    "mean_abs_corr": 0.43,
+    "mase_joint": 0.153,
+    "mase_single": 0.16,
+    "joint_better_pct": 52.1
+  }
+]

@@ -1,0 +1,32 @@
+# Pinned to what the published numbers were produced with.
+#
+# torch is deliberately NOT pinned: install the build that matches your accelerator
+# (CPU / CUDA / Apple MPS) from https://pytorch.org/get-started/locally/ FIRST, then this.
+# The published run used torch 2.13.0 with numpy 2.2.6 on Apple MPS.
+
+# --- foundation models -------------------------------------------------------
+timesfm[torch]==2.0.2          # TimesFM 2.5, checkpoint google/timesfm-2.5-200m-pytorch
+chronos-forecasting==2.3.1     # Chronos-2 and Chronos-Bolt
+
+# --- classical + ML comparators ---------------------------------------------
+statsforecast==2.1.1           # AutoETS, AutoTheta, MSTL
+scikit-learn==1.7.2            # HistGradientBoostingRegressor
+
+# --- data + plumbing ---------------------------------------------------------
+numpy==2.2.6
+pandas==2.3.3
+pyarrow==24.0.0                # reading BOOM's arrow shards
+huggingface_hub==1.12.0        # sampling BOOM without cloning 2.81 GB
+
+# --- notebook only -----------------------------------------------------------
+matplotlib==3.10.9
+# For running timesfm_quickstart.ipynb yourself:
+#   pip install jupyterlab            (or: nbformat nbclient ipykernel to execute headless)
+
+# --- deliberately absent -----------------------------------------------------
+# lightgbm: the wheel installs but cannot dlopen without libomp.dylib on macOS.
+#           scikit-learn's HistGradientBoostingRegressor stands in (same algorithm class).
+# toto-ts:  downgrades torch 2.13->2.7, numpy 2.2.6->1.26.4, pandas 2.3.3->2.2.3 and
+#           hard-pins jupyter==1.1.1. Needs its own virtualenv.
+# uni2ts:   downgrades torch->2.4.1, numpy->1.26.4, pandas->2.1.4, pulls jax+lightning.
+#           Needs its own virtualenv.

@@ -1,0 +1,43 @@
+aligned: 26,546 rows, covariates ['embedded_solar_generation', 'embedded_wind_generation', 'dow', 'is_holiday']
+  non-finite after fill: {'embedded_solar_generation': 0, 'embedded_wind_generation': 0, 'dow': 0, 'is_holiday': 0}
+origins: 129 daily, horizon 48, context 512
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  plain              75 ms/forecast
+  xreg_energy        83 ms/forecast
+  xreg_calendar      79 ms/forecast
+  xreg_both          83 ms/forecast
+
+=== overall (mean over all origins) ===
+                 mase    mape    n
+variant                           
+plain          0.7551  6.7241  129
+xreg_both      0.6574  5.8492  129
+xreg_calendar  0.7835  7.0593  129
+xreg_energy    0.5730  5.0390  129
+
+=== by day type — MASE (n in brackets) ===
+               holiday (n=4)  weekday (n=88)  weekend (n=37)
+variant                                                     
+plain                  1.031           0.690           0.881
+xreg_both              0.833           0.583           0.816
+xreg_calendar          0.748           0.711           0.959
+xreg_energy            0.960           0.534           0.624
+
+=== does the calendar flag fix the holiday gap? ===
+  weekday  xreg_calendar  0.711 vs plain 0.690  (+3.2% worse)
+  weekday  xreg_both      0.583 vs plain 0.690  (-15.5% better)
+  weekday  xreg_energy    0.534 vs plain 0.690  (-22.6% better)
+  weekend  xreg_calendar  0.959 vs plain 0.881  (+8.8% worse)
+  weekend  xreg_both      0.816 vs plain 0.881  (-7.4% better)
+  weekend  xreg_energy    0.624 vs plain 0.881  (-29.2% better)
+  holiday  xreg_calendar  0.748 vs plain 1.031  (-27.5% better)
+  holiday  xreg_both      0.833 vs plain 1.031  (-19.2% better)
+  holiday  xreg_energy    0.960 vs plain 1.031  (-6.9% better)
+
+=== win rate vs plain, per origin ===
+  xreg_energy    beats plain on 80.6% of origins
+  xreg_calendar  beats plain on 41.9% of origins
+  xreg_both      beats plain on 67.4% of origins
+
+wrote results/covariate_test*.csv/.json

@@ -1,0 +1,17 @@
+# Per-family model virtualenvs (~3.2 GB). Rebuild: bash envs/setup.sh
+.venv-*/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+
+# Cached source data. Every series is re-fetchable with no API key:
+#   python3 datasets.py
+# boom_telemetry_5t.csv alone is 5 MB and the BOOM shards are Datadog's to distribute,
+# so the cache is rebuilt rather than committed.
+data/
+
+# Forecast handoff artefacts are reproducible from the runners. Kept out so the repo
+# stays reviewable; results/ (the scored aggregates) IS committed, because those are the
+# numbers the write-up cites and they must be auditable without a GPU.
+forecasts/

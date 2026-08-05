@@ -1,0 +1,51 @@
+models   : ['naive_last', 'naive_mean', 'seasonal_naive', 'seasonal_profile', 'autoets', 'autotheta', 'gbdt_calendar', 'timesfm_2p5_ctx2048', 'chronos_2_ctx2048', 'chronos_bolt_small']
+datasets : ['uk_demand_30min', 'uk_demand_daily', 'bangkok_temp_1h', 'london_temp_1h', 'bangkok_pm25_1h', 'btc_usd_1h', 'btc_returns_1h', 'quake_magnitude_seq', 'white_noise_synth', 'boom_telemetry_5t']
+origins  : 20 per series, context 2048
+
+  not run: toto_2p0 -- Datadog Toto-2.0 (current GIFT-Eval leader). `toto-ts==0.2.0` downgrades torch 2.11->2.7, numpy 2.2.6->1.26.4, pandas 2.3.3->2.2.3 and hard-pins jupyter==1.1.1. Needs its own venv.
+  not run: moirai_2 -- Salesforce Moirai-2. `uni2ts==2.0.0` downgrades torch->2.4.1, numpy->1.26.4, pandas->2.1.4 and pulls jax+lightning. Needs its own venv.
+
+--- uk_demand_30min
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/170 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 170/170 [00:00<00:00, 11227.25it/s]
+
+Loading weights:   0%|          | 0/143 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 143/143 [00:00<00:00, 13532.76it/s]
+    200 scored forecasts in 57s
+--- uk_demand_daily
+    10 scored forecasts in 1s
+--- bangkok_temp_1h
+    200 scored forecasts in 35s
+--- london_temp_1h
+    200 scored forecasts in 36s
+--- bangkok_pm25_1h
+    200 scored forecasts in 42s
+--- btc_usd_1h
+    200 scored forecasts in 45s
+--- btc_returns_1h
+    200 scored forecasts in 30s
+--- quake_magnitude_seq
+    200 scored forecasts in 41s
+--- white_noise_synth
+    200 scored forecasts in 32s
+--- boom_telemetry_5t
+    1200 scored forecasts in 371s
+
+=== MASE by dataset (columns ordered by seasonal strength, high -> low) ===
+seasonal strength: bangkok_temp_1h=0.864  london_temp_1h=0.859  uk_demand_30min=0.85  uk_demand_daily=0.532  bangkok_pm25_1h=0.368  white_noise_synth=0.223  btc_returns_1h=0.116  quake_magnitude_seq=0.114  btc_usd_1h=0.022  boom_telemetry_5t=0.009
+dataset              bangkok_temp_1h  london_temp_1h  uk_demand_30min  uk_demand_daily  bangkok_pm25_1h  white_noise_synth  btc_returns_1h  quake_magnitude_seq  btc_usd_1h  boom_telemetry_5t
+model                                                                                                                                                                                         
+autoets                        2.204           1.738            2.822            0.601            0.833              0.670           0.738                0.804       0.660              0.705
+autotheta                      1.265           1.048            0.910            0.592            0.725              0.687           0.770                0.806       0.665              0.514
+chronos_2_ctx2048              0.878           0.851            0.437            0.719            0.621              0.670           0.738                0.766       0.711              0.356
+chronos_bolt_small             0.833           0.851            0.620            0.740            0.595              0.671           0.740                0.776       0.715              0.408
+gbdt_calendar                  1.602           1.415            1.179            1.123            0.798              0.719           0.799                0.848       1.271              0.812
+naive_last                     2.400           1.738            2.368            0.973            0.711              0.909           1.022                0.993       0.656              0.528
+naive_mean                     2.315           3.550            2.580            2.919            1.450              0.672           0.739                0.805       6.699              1.926
+seasonal_naive                 1.162           1.039            0.896            1.431            0.742              1.011           1.054                1.044       0.918              0.939
+seasonal_profile               1.039           1.373            1.038            0.810            0.700              0.771           0.849                0.876       1.334              1.038
+timesfm_2p5_ctx2048            0.884           0.873            0.498            0.584            0.618              0.671           0.740                0.769       0.685              0.403
+
+wrote results/bakeoff_full*.csv/.json
