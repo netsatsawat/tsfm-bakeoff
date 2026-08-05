@@ -444,6 +444,7 @@ model wide.
 
 ## Licence
 
-Code: MIT. Data and model weights carry their own terms — see [LICENSE](LICENSE). Note
+Code: MIT ([`LICENSE`](LICENSE)). Data and model weights carry their own terms — see
+[`NOTICE.md`](NOTICE.md). Note
 **Moirai-2's weights are CC-BY-NC-4.0 (non-commercial)**; TimesFM, Chronos and Toto are
 Apache-2.0.
