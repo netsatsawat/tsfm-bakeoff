@@ -1,6 +1,22 @@
-# Time-series foundation model bake-off
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
+    <img src="assets/banner-light.png" alt="Time-series foundation model bake-off" width="100%">
+  </picture>
+</h1>
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white) ![13 models](https://img.shields.io/badge/models-13-eb6834) ![38 cells](https://img.shields.io/badge/dataset%C3%97horizon%20cells-38-2a78d6) ![No API keys](https://img.shields.io/badge/API%20keys-none-1baf7a)
+<p align="center">
+  <a href="#headline-results">Headline results</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#read-these-caveats-before-quoting-the-numbers">Caveats</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#experimental-protocol">Protocol</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#quick-start">Quick start</a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License: MIT"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+"></a>
+  <img src="https://img.shields.io/badge/models-13-eb6834?style=for-the-badge" alt="13 models">
+  <img src="https://img.shields.io/badge/dataset%C3%97horizon%20cells-38-2a78d6?style=for-the-badge" alt="38 dataset-by-horizon cells">
+  <img src="https://img.shields.io/badge/API%20keys-none-1baf7a?style=for-the-badge" alt="No API keys">
+  <a href="https://satsawat.ai"><img src="https://img.shields.io/badge/author-satsawat.ai-e8a112?style=for-the-badge" alt="Author: satsawat.ai"></a>
+</p>
 
 Thirteen models, three isolated Python environments plus a dependency-free scorer, one
 set of rules. No API keys, no GPU required.
