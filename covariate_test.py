@@ -25,7 +25,7 @@ so the four bank holidays are visible instead of averaged away.
 
 WHY IT NEEDS A SEPARATE SCRIPT: benchmark.py is deliberately dataset-agnostic and its
 Task carries only a target series. Threading dataset-specific covariates through it would
-put domain knowledge in the harness. This experiment is one dataset by design.
+put domain knowledge in the harness. This experiment is one dataset.
 """
 from __future__ import annotations
 

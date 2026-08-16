@@ -42,7 +42,7 @@ python3 -m venv .venv-moirai && .venv-moirai/bin/pip install -r envs/moirai.txt
 Run `run_core.py` **first**: it writes the `forecasts/_truth/` files that carry the
 origins, contexts and MASE denominators every other runner and the scorer depend on.
 After that, the two satellite runners are independent of each other and can run on
-different days or different machines, which is the point.
+different days or different machines.
 
 ```bash
 .venv-core/bin/python   runners/run_core.py             # TimesFM, Chronos-2/Bolt, classical, naive
@@ -52,7 +52,7 @@ different days or different machines, which is the point.
 python3 score.py                                        # stdlib only; no venv needed
 ```
 
-`score.py` deliberately requires no virtualenv. If scoring needed one of these
+`score.py` requires no virtualenv. If scoring needed one of these
 environments, the metric definitions would live next to a model and drift.
 
 ## Disk and memory

@@ -1,0 +1,31 @@
+# CI cannot run the bake-off: the thirteen models need three separate
+# virtualenvs (envs/core.txt, envs/moirai.txt, envs/toto.txt) whose pins
+# contradict each other, plus a torch build chosen per accelerator, which
+# is the whole reason this repository exists. requirements.txt is
+# therefore not installed here; a runner that pip-installed it would
+# still not reproduce the run.
+#
+# What CI can enforce is that the published numbers stay tied to the
+# artifact they came from: verify_readme_claims.py recomputes the
+# headline results from results/cross_env_scores.json and fails if the
+# README and the artifact have drifted apart. It is stdlib-only and
+# reads committed JSON, so it needs no dependencies at all.
+
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          # The floor the README's badge claims. The verifier is
+          # stdlib-only, so a matrix would exercise nothing extra.
+          python-version: "3.10"
+      - name: every README number matches its artifact
+        run: python scripts/verify_readme_claims.py

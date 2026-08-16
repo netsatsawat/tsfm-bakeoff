@@ -104,10 +104,10 @@ artifacts is a slip that came from the `toto-ts` 0.2.0 *package* version; it is 
 the committed results stay internally consistent.) That checkpoint ran all 38 cells
 with a mean rank of 9.8 out of 13 (best 4, worst 13) and won none, despite BOOM being
 Datadog's own benchmark and Toto training on Datadog telemetry, so part of this study
-is home turf for it. The honest conclusions: leaderboard pedigree of a model family
-does not transfer automatically to its earlier open checkpoint, and rank on one
-benchmark does not predict performance on your data at your horizon. Rerunning with
-the Toto-2.0 weights is queued as future work.
+is home turf for it. The honest conclusions: leaderboard pedigree of a model family does not
+transfer automatically to its earlier open checkpoint, and rank on one benchmark does
+not predict performance on your data at your horizon. Rerunning with the Toto-2.0
+weights is queued as future work.
 
 **The horizon changes the winner on the same data.** Bangkok PM2.5:
 
@@ -135,9 +135,9 @@ day 7; this study does not localize it further.
   `results/bakeoff_full2*` behaves differently.
 - **The denominators are not identical.** TimesFM is absent from two cells,
   `boom_telemetry_5t@ds-139-5T_v003#h2016` and `uk_demand_30min#h1440`, from runner
-  failures left visible rather than papered over. Its 6 wins therefore come from 36
-  cells while Chronos-2's 13 come from 38. Toto's h1 crash on the daily series was
-  fixed and that cell re-run; `results/matrix.log` predates the re-run.
+  failures I left visible. Its 6 wins therefore come from 36 cells while
+  Chronos-2's 13 come from 38. Toto's h1 crash on the daily series was fixed and
+  that cell re-run; `results/matrix.log` predates the re-run.
 - Every model ran zero-shot. No fine-tuning, which would move all of these.
 
 ---
@@ -198,7 +198,7 @@ default:
 | hourly series | 1 day | 24 |
 | `boom_telemetry_5t` | 4 hours | 48 |
 
-BOOM is deliberately different: 5-minute resolution over 14 days per series makes a
+BOOM is different: 5-minute resolution over 14 days per series makes a
 4-hour horizon the meaningful observability decision, and makes 14- and 30-day cells
 impossible.
 
@@ -216,8 +216,8 @@ on mismatched origins. Context equality is enforced by the task slice described 
 
 Nine of the ten are windowed to 2026, which postdates every cutoff on the TimesFM 2.5
 model card. That is what makes "zero-shot" literally true rather than hopeful, and it
-is why ETTh1, Electricity, Traffic and Monash are deliberately absent: those have been
-public long enough that skill and recall cannot be separated.
+is why ETTh1, Electricity, Traffic and Monash are absent: those have been public long
+enough that skill and recall cannot be separated.
 
 | key | domain | freq | season | 2nd season | ratio scale? |
 |---|---|---|---|---|---|
@@ -346,7 +346,7 @@ flag fixes it, and no amount of `--force-reinstall` will either. The symptom is 
 import-time `ValueError: numpy.dtype size changed`, which reads like a corrupt install
 and is not one.
 
-The scorer is the deliberate fourth participant: `score.py` runs on a bare system
+The scorer is the fourth participant: `score.py` runs on a bare system
 Python with no third-party imports at all, so the metric definitions cannot drift
 toward any family's environment.
 

@@ -204,8 +204,8 @@ def fetch_quakes(spec: Spec) -> pd.DataFrame:
     next earthquake is drawn from the Gutenberg-Richter distribution and is, to the
     limits of current geophysics, independent of the magnitude of the last one. There is
     no diurnal cycle in tectonics and no trend over a few months. The series is indexed
-    by EVENT ORDER, not clock time, which is deliberate -- it removes any residual
-    time-of-day artifact from the catalog itself.
+    by EVENT ORDER, not clock time. That removes any residual time-of-day artifact from
+    the catalog itself.
     """
     rows: list[dict] = []
     start = pd.Timestamp(WINDOW[0])
@@ -281,7 +281,7 @@ def fetch_boom(spec: Spec) -> pd.DataFrame:
             # Reject non-tasks. A constant or near-constant variate is configuration, not
             # a forecasting problem, and it poisons every scale-relative metric: MASE
             # divides by the naive error and surge ratios divide by the MAD, both of which
-            # go to zero. Checking std on the FULL matrix was not enough -- a variate can
+            # go to zero. Checking std on the FULL matrix was not enough: a variate can
             # be constant only within the trimmed tail, which is what we actually use.
             if finite.mean() < 0.99:
                 continue

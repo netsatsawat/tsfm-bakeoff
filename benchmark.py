@@ -242,7 +242,7 @@ def main() -> int:
 
     pivot = agg.pivot(index="model", columns="dataset", values="mase")
     # Seasonal strength per dataset. For a PANEL this must be the mean across the series
-    # actually benchmarked -- taking series[0] labelled BOOM 0.009 when the sampled mean
+    # actually benchmarked: taking series[0] labelled BOOM 0.009 when the sampled mean
     # is ~0.44, which would have put a mixture in the wrong place on the structure axis.
     struct = {}
     for key in args.datasets:

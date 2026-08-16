@@ -109,7 +109,7 @@ rationale in the module docstring. The ones that changed a decision here:
    **arithmetically invalid** for `bangkok_temp_1h`, `london_temp_1h` (0 degC is a
    convention), `btc_returns_1h`, `white_noise_synth` (zero-mean) and
    `boom_telemetry_5t` (ships normalized, crosses zero). Half the corpus. MASE is the
-   only metric that spans all ten series, which is why it is the primary metric.
+   only metric that spans all ten series, so it is the primary metric.
 
 ## 4. BOOM: the high-dimensional, overlapping-seasonality, sudden-surge archetype
 
